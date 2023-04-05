@@ -1,4 +1,5 @@
 ﻿using Spectre.Console;
+using System;
 using static System.Console;
 
 namespace SchellingModelOfSegregation;
@@ -7,20 +8,21 @@ public class ModelOfSegregation
 {
     public static void Main(string[] args)
     {
-        var panel = new Panel("Hello World");
-
-        panel.Header = new PanelHeader("Yurii");
-
-        panel.Border = BoxBorder.Square;
-
-        panel.Padding = new Padding(5, 5, 5, 5);
-
-
-        AnsiConsole.Write(panel);
 
         Worlds worlds = new Worlds();
-        worlds.BildWorlds();
-        worlds.DrawWorlds();
+
+        while (true)
+        {
+            worlds.BildWorlds();
+            worlds.DrawWorlds();
+            worlds.CauntСitizencs();
+            char i = ReadKey().KeyChar;
+            if (i == '9')
+            {
+                break;
+            }
+            Clear();
+        }
     }
 
     static void ShowSimplePercentage()

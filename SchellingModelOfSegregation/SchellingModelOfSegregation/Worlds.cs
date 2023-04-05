@@ -1,53 +1,59 @@
-﻿using Spectre.Console;
-using System;
-using static System.Console;
+﻿using static System.Console;
+using Spectre.Console;
 
 namespace SchellingModelOfSegregation
 {
     internal class Worlds
     {
-        int[,] world = new int[20, 20];
+        Сitizens[,] world = new Сitizens[30, 30];
 
         public void BildWorlds()
         {
-            int x = 0;  
-            for (int i = 0; i < 20; i++)
+            Random r = new Random();
+            int chance = 1;
+
+            for (int i = 0; i < 30; i++)
             {
-                for (int j = 0; j < 20; j++)
+                for (int j = 0; j < 30; j++)
                 {
-                    world[i, j] = x;
-                    x++;
+                   chance = r.Next(1, 3);
+                   world[i, j] = new Сitizens(chance);
                 }
             }
         }
 
         public void DrawWorlds()
         {
-            var grid = new Grid();
+            var canvas = new Canvas(30, 30);
 
-            for (int i = 0; i < 20; i++) grid.AddColumn();
-
-            Text[] worldRow = new Text[20]; 
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < canvas.Width; i++)
             {
-                for (int j = 0; j < 20; j++)
+                for (var j = 0; j < canvas.Height; j++)
                 {
-                    worldRow[j] = new Text(world[i,j].ToString());
+                    canvas.SetPixel(i, j, world[i,j].color);
                 }
-                grid.AddRow(worldRow);
             }
+            AnsiConsole.Write(canvas);
+        }
 
-            AnsiConsole.Write(grid);
-
-
-            //for (int i = 0; i < 20; i++)
-            //{
-            //    for (int j = 0; j < 20; j++)
-            //    {
-            //        Write(world[i,j]);
-            //    }
-            //    WriteLine("");
-            //}
+        public void CauntСitizencs()
+        {
+            int red = 0;
+            int blue = 0;
+            
+            foreach (Сitizens i in world)
+            {
+                if (i.color == Color.Red)
+                {
+                    red++;
+                } 
+                else
+                {
+                    blue++;
+                }
+            }
+            WriteLine(red);
+            WriteLine(blue);
         }
     }
 }

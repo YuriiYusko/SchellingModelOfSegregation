@@ -1,6 +1,4 @@
-﻿using Spectre.Console;
-using System;
-using static System.Console;
+﻿using static System.Console;
 
 namespace SchellingModelOfSegregation;
 
@@ -9,15 +7,31 @@ public class ModelOfSegregation
     public static void Main(string[] args)
     {
 
-        Worlds worlds = new Worlds();
+        int height = 0;
+        int width = 0;
 
+        WriteLine("Height (1-100)");
+        if (int.TryParse(ReadLine(), out int resulth))
+        {
+            height = resulth;
+        }
+
+        WriteLine("Width (1-100)");
+        if (int.TryParse(ReadLine(), out int resultw))
+        {
+            width = resultw;
+        }
+
+        Worlds worlds = new Worlds(height, width);
+
+        Clear();
         while (true)
         {
             worlds.BildWorlds();
             worlds.DrawWorlds();
             worlds.CauntСitizencs();
             char i = ReadKey().KeyChar;
-            if (i == '9')
+            if (i == '0')
             {
                 break;
             }

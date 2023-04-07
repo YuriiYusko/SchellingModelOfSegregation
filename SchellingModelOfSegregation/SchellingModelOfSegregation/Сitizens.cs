@@ -4,6 +4,10 @@ namespace SchellingModelOfSegregation
 {
     internal class Сitizens
     {
+        public Сitizens()
+        {
+            color = Color.Black;
+        }
         public Сitizens(int i)
         {
             switch(i)

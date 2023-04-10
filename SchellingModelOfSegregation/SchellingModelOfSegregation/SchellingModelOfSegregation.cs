@@ -1,4 +1,5 @@
 ﻿using Spectre.Console;
+using System;
 
 namespace SchellingModelOfSegregation;
 
@@ -33,18 +34,16 @@ public class ModelOfSegregation
         City city = new City(height, width, emptyPlace);
 
         Console.Clear();
+
+        city.BildCity();
+
         while (true)
         {
-            city.BildCity();
-            city.checkHappiness();
+            city.CheckHappiness();
+            city.CheckEmpty();
             city.DrawCity();
-
-            Thread.Sleep(100);
-            char i = Console.ReadKey().KeyChar;
-            if (i == '0')
-            {
-                break;
-            }
+            city.Migration();
+            Thread.Sleep(200);
             Console.Clear();
         }
     }
@@ -94,6 +93,7 @@ public class ModelOfSegregation
                         Console.WriteLine("║    │││ \\   ║");
                         Console.WriteLine("║    │││  O  ║");
                         Console.WriteLine("║    OOO     ║");
+
                         break;
                     };
                 case 1:

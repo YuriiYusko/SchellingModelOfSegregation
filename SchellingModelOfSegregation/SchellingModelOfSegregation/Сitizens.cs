@@ -6,58 +6,62 @@ namespace SchellingModelOfSegregation
     internal class Сitizens
     {
         //Variables
-        int needNeighbor = 3;
-        private static Color happyColor = new Color(0, 175, 0);
-        private static Color sadColor = new Color(175, 0, 0);
+        private readonly int needNeighbor = 3;
+        private readonly static Color happyColor = new(0, 175, 0);
+        private readonly static Color sadColor = new(175, 0, 0);
 
         //Constructors
         public Сitizens(int coordinat_i, int coordinat_j)
         {
-            symbol = "  ";
-            this.coordinat_i = coordinat_i;
-            this.coordinat_j = coordinat_j;
-            humor = happyColor;
+            Symbol = "  ";
+            this.Coordinat_i = coordinat_i;
+            this.Coordinat_j = coordinat_j;
+            Humor = happyColor;
         }
         public Сitizens(int coordinat_i, int coordinat_j, int chance)
         {
-            symbol = " ";
+            Symbol = " ";
             switch (chance)
             {
                 case 1:
-                    this.symbol = "🐶";
+                    this.Symbol = "🐶";
                     break;
                 case 2:
-                    this.symbol = "🐱";
+                    this.Symbol = "🐱";
                     break;
             }
-            this.coordinat_i = coordinat_i;
-            this.coordinat_j = coordinat_j;
-            humor = happyColor;
+            this.Coordinat_i = coordinat_i;
+            this.Coordinat_j = coordinat_j;
+            Humor = happyColor;
         }
 
         //Properties
-        public Color humor { get; private set; }
-        public string symbol { get; private set; }
-        public int coordinat_i { get; private set; }
-        public int coordinat_j { get; private set; }
+        public Color Humor { get; private set; }
+        public string Symbol { get; private set; }
+        public int Coordinat_i { get; private set; }
+        public int Coordinat_j { get; private set; }
 
         //Methods
-        public void checkHappiness(Сitizens[,] world, int height, int width)
+        public Сitizens? CheckHappiness(Сitizens[,] world, int height, int width)
         {
             int countNeighbor = 0;
-
-            for (int i = coordinat_i - 1; i <= coordinat_i + 1; ++i)
+            for (int i = Coordinat_i - 1; i <= Coordinat_i + 1; ++i)
             {
-                for (int j = coordinat_j - 1; j <= coordinat_j + 1; ++j)
+                for (int j = Coordinat_j - 1; j <= Coordinat_j + 1; ++j)
                 {
-                    if (0 <= i && i < height && 0 <= j && j < width && (i != coordinat_i || j != coordinat_j))
+                    if (0 <= i && i < height && 0 <= j && j < width && (i != Coordinat_i || j != Coordinat_j))
                     {
-                        if (world[i, j].symbol == symbol) { countNeighbor++; }
+                        if (world[i, j].Symbol == Symbol) { countNeighbor++; }
                     }
                 }
             }
-
-            humor = (countNeighbor >= needNeighbor ? happyColor : sadColor);
+            Humor = (countNeighbor >= needNeighbor ? happyColor : sadColor);
+            return Humor == sadColor ? this : null;
+        }
+        public void Move(int coordinat_i, int coordinat_j)
+        {
+            this.Coordinat_i = coordinat_i;
+            this.Coordinat_j = coordinat_j;
         }
     }
 }

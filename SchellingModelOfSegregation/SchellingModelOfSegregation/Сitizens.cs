@@ -6,7 +6,7 @@ namespace SchellingModelOfSegregation
     internal class Сitizens
     {
         //Variables
-        private readonly int needNeighbor = 3;
+        private readonly int needNeighbor = 4;
         private readonly static Color happyColor = new(0, 175, 0);
         private readonly static Color sadColor = new(175, 0, 0);
 
@@ -14,8 +14,8 @@ namespace SchellingModelOfSegregation
         public Сitizens(int coordinat_i, int coordinat_j)
         {
             Symbol = "  ";
-            this.Coordinat_i = coordinat_i;
-            this.Coordinat_j = coordinat_j;
+            Coordinat_i = coordinat_i;
+            Coordinat_j = coordinat_j;
             Humor = happyColor;
         }
         public Сitizens(int coordinat_i, int coordinat_j, int chance)
@@ -30,8 +30,8 @@ namespace SchellingModelOfSegregation
                     this.Symbol = "🐱";
                     break;
             }
-            this.Coordinat_i = coordinat_i;
-            this.Coordinat_j = coordinat_j;
+            Coordinat_i = coordinat_i;
+            Coordinat_j = coordinat_j;
             Humor = happyColor;
         }
 

@@ -8,6 +8,7 @@ namespace SchellingModelOfSegregation
         private readonly Random random = new Random();
         private readonly int height = 0;
         private readonly int width = 0;
+        private int iteracija = 0;
         private readonly int emptyPlaceCount = 0;
         private List<Сitizens> emptyPlacesList = new();
         private List<Сitizens> sadСitizensList = new();
@@ -18,8 +19,8 @@ namespace SchellingModelOfSegregation
         {
             this.height = height;
             this.width = width;
-            this.emptyPlaceCount = emptyPlace;
-            this.city = new Сitizens[height, width];
+            emptyPlaceCount = emptyPlace;
+            city = new Сitizens[height, width];
         }
 
         //Methods
@@ -97,6 +98,8 @@ namespace SchellingModelOfSegregation
                 var jForEmpty = sadСitizens.Coordinat_j;
                 sadСitizens.Move(emptyPlaces.Coordinat_i, emptyPlaces.Coordinat_j);
                 emptyPlaces.Move(iForEmpty, jForEmpty);
+
+                iteracija++;
             }
         }
         private void CauntСitizencs()
@@ -122,7 +125,8 @@ namespace SchellingModelOfSegregation
             }
             Console.WriteLine($"🐶 - {dog}");
             Console.WriteLine($"🐱 - {cat}");
-            Console.Write($"Emppty - {empty} ");
+            Console.WriteLine($"Emppty - {empty} ");
+            Console.WriteLine($"Iteracija - {iteracija}");
             Console.WriteLine("");
         }
     }

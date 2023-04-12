@@ -10,6 +10,7 @@ namespace SchellingModelOfSegregation
         private readonly int width = 0;
         private int iteracija = 0;
         private readonly int emptyPlaceCount = 0;
+        private readonly Color happyColor = new(0, 175, 0);
         private List<Сitizens> emptyPlacesList = new();
         private List<Сitizens> sadСitizensList = new();
         private Сitizens[,] city;
@@ -65,14 +66,12 @@ namespace SchellingModelOfSegregation
         }
         public void CheckHappiness()
         {
-            Сitizens checkNullPosition;
             sadСitizensList.Clear();
             foreach (Сitizens c in city)
             {
                 if (c.Symbol != "  ")
                 {
-                    checkNullPosition = c.CheckHappiness(city, height, width);
-                    if (checkNullPosition != null) { sadСitizensList.Add(checkNullPosition); }
+                    if (c.CheckHappiness(city, height, width) == "Sad") { sadСitizensList.Add(c); }
                 }
             }
         }
@@ -81,11 +80,12 @@ namespace SchellingModelOfSegregation
             emptyPlacesList.Clear();
             foreach (Сitizens c in city)
             {
-                if (c.Symbol == "  ") { emptyPlacesList.Add(c); }
+                if (c.CheckEmpty() == "Empty") { emptyPlacesList.Add(c); }
             }
         }
         public void Migration()
         {
+            Color color = new Color(0, 175, 0);
             if (sadСitizensList.Count > 0)
             {
                 Сitizens sadСitizens = sadСitizensList[random.Next(sadСitizensList.Count)];
@@ -99,6 +99,36 @@ namespace SchellingModelOfSegregation
                 sadСitizens.Move(emptyPlaces.Coordinat_i, emptyPlaces.Coordinat_j);
                 emptyPlaces.Move(iForEmpty, jForEmpty);
 
+                sadСitizens.CheckHappiness(city, height, width);
+
+                for (int i = sadСitizens.Coordinat_i - 1; i <= sadСitizens.Coordinat_i + 1; ++i)
+                {
+                    for (int j = sadСitizens.Coordinat_j - 1; j <= sadСitizens.Coordinat_j + 1; ++j)
+                    {
+                        if (0 <= i && i < height && 0 <= j && j < width && (i != sadСitizens.Coordinat_i || j != sadСitizens.Coordinat_j))
+                        {
+                            if (city[i, j].CheckHappiness(city, height, width) == "Sad"){
+                                sadСitizensList.Add(city[i, j]);
+                            }
+                        }
+                    }
+                }
+
+                for (int i = emptyPlaces.Coordinat_i - 1; i <= emptyPlaces.Coordinat_i + 1; ++i)
+                {
+                    for (int j = emptyPlaces.Coordinat_j - 1; j <= emptyPlaces.Coordinat_j + 1; ++j)
+                    {
+                        if (0 <= i && i < height && 0 <= j && j < width && (i != emptyPlaces.Coordinat_i || j != emptyPlaces.Coordinat_j))
+                        {
+                            if (city[i, j].CheckHappiness(city, height, width) == "Sad")
+                            {
+                                sadСitizensList.Add(city[i, j]);
+                            }
+                        }
+                    }
+                }
+
+                sadСitizensList.RemoveAll(citizen => citizen.Humor == happyColor);
                 iteracija++;
             }
         }

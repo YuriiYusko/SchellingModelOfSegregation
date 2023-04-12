@@ -1,5 +1,4 @@
 ﻿using Spectre.Console;
-using System.Diagnostics.Contracts;
 
 namespace SchellingModelOfSegregation
 {
@@ -42,26 +41,42 @@ namespace SchellingModelOfSegregation
         public int Coordinat_j { get; private set; }
 
         //Methods
-        public Сitizens? CheckHappiness(Сitizens[,] world, int height, int width)
+
+        public void DrawInCity()
         {
-            int countNeighbor = 0;
-            for (int i = Coordinat_i - 1; i <= Coordinat_i + 1; ++i)
+            Console.SetCursorPosition(Coordinat_j + Coordinat_j, Coordinat_i);
+            AnsiConsole.Write(new Text(Symbol, new Style(Color.White, Humor)));
+        }
+        public string CheckHappiness(Сitizens[,] city, int height, int width)
+        {
+            if (Symbol != "  ")
             {
-                for (int j = Coordinat_j - 1; j <= Coordinat_j + 1; ++j)
+                int countNeighbor = 0;
+                for (int i = Coordinat_i - 1; i <= Coordinat_i + 1; ++i)
                 {
-                    if (0 <= i && i < height && 0 <= j && j < width && (i != Coordinat_i || j != Coordinat_j))
+                    for (int j = Coordinat_j - 1; j <= Coordinat_j + 1; ++j)
                     {
-                        if (world[i, j].Symbol == Symbol) { countNeighbor++; }
+                        if (0 <= i && i < height && 0 <= j && j < width && (i != Coordinat_i || j != Coordinat_j))
+                        {
+                            if (city[i, j].Symbol == Symbol) { countNeighbor++; }
+                        }
                     }
                 }
+                Humor = (countNeighbor >= needNeighbor ? happyColor : sadColor);
             }
-            Humor = (countNeighbor >= needNeighbor ? happyColor : sadColor);
-            return Humor == sadColor ? this : null;
+            DrawInCity();
+            return Humor == sadColor ? "Sad" : "Happi";
+        }
+        public string CheckEmpty()
+        {
+            DrawInCity();
+            return Symbol == "  " ? "Empty" : "NotEmpty";
         }
         public void Move(int coordinat_i, int coordinat_j)
         {
             this.Coordinat_i = coordinat_i;
             this.Coordinat_j = coordinat_j;
+            DrawInCity() ;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Spectre.Console;
 using System;
+using System.Net.Security;
 
 namespace SchellingModelOfSegregation;
 
@@ -9,24 +10,25 @@ public class ModelOfSegregation
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
+        Console.WriteLine("Rozwiń okno konsoli do pełnego ekranu i naciśni -Enter-");
+        Console.ReadLine();
+        Console.Clear();
+
         int height = 0;
         int width = 0;
         int emptyPlace = 0;
 
-        Console.ReadLine();
-        Test();
-
-        Console.WriteLine("World height (1-100)");
+        Console.WriteLine($"Wysokość świata (Min.-25 Max.-{Console.WindowHeight - 1})");
         if (int.TryParse(Console.ReadLine(), out int resulth))
         {
             height = resulth;
         }
-        Console.WriteLine("World width (1-100)");
+        Console.WriteLine($"Szerokość świata (Min.-25 Max.-{(Console.WindowWidth - 1)/2}");
         if (int.TryParse(Console.ReadLine(), out int resultw))
         {
             width = resultw;
         }
-        Console.WriteLine("Empty place (1-100)");
+        Console.WriteLine("Empty place");
         if (int.TryParse(Console.ReadLine(), out int resulte))
         {
             emptyPlace = resulte;
@@ -36,14 +38,15 @@ public class ModelOfSegregation
 
         City city = new City(height, width, emptyPlace);
         Console.Clear();
+
         city.BildCity();
+        city.CheckHappiness();
+        city.CheckEmpty();
+        Console.ReadLine();
 
         ConsoleKeyInfo cki = new ConsoleKeyInfo();
         while (true)
         {
-            city.CheckHappiness();
-            city.CheckEmpty();
-            city.DrawCity();
             city.Migration();
             if (Console.KeyAvailable == true)
             {
@@ -54,8 +57,6 @@ public class ModelOfSegregation
                     Console.ReadLine();
                 }
             }
-
-            Console.Clear();
         }
 
         static void Test()
@@ -86,7 +87,7 @@ public class ModelOfSegregation
                 {
                     Console.SetCursorPosition(j,i);
                     Console.Write('X');
-                    Thread.Sleep(100);
+                    Thread.Sleep(10);
                 }
             }
         }

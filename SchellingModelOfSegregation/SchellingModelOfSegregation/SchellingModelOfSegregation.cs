@@ -17,6 +17,7 @@ public class ModelOfSegregation
         int height = 0;
         int width = 0;
         int emptyPlace = 0;
+        int neighbor = 0;
 
         Console.WriteLine($"Wysokość świata (Min.-25 Max.-{Console.WindowHeight - 1})");
         if (int.TryParse(Console.ReadLine(), out int resulth))
@@ -28,10 +29,15 @@ public class ModelOfSegregation
         {
             width = resultw;
         }
-        Console.WriteLine("Empty place");
+        Console.WriteLine("Puste miejsca.");
         if (int.TryParse(Console.ReadLine(), out int resulte))
         {
             emptyPlace = resulte;
+        }
+        Console.WriteLine("Poziom tolerancji (Optymalny: 3-5).");
+        if (int.TryParse(Console.ReadLine(), out int resultn))
+        {
+            neighbor = resultn;
         }
 
 
@@ -39,7 +45,7 @@ public class ModelOfSegregation
         City city = new City(height, width, emptyPlace);
         Console.Clear();
 
-        city.BildCity();
+        city.BildCity(neighbor);
         city.CheckHappiness();
         city.CheckEmpty();
         Console.ReadLine();

@@ -25,7 +25,7 @@ namespace SchellingModelOfSegregation
         }
 
         //Methods
-        public void BildCity()
+        public void BildCity(int neighbor)
         {
             //Create City
             int chance = 0;
@@ -34,7 +34,7 @@ namespace SchellingModelOfSegregation
                 for (int j = 0; j < width; j++)
                 {
                     chance = random.Next(1, 3);
-                    city[i, j] = new Сitizens(i, j, chance);
+                    city[i, j] = new Сitizens(i, j, chance, neighbor);
                 }
             }
             //Create empty place in city

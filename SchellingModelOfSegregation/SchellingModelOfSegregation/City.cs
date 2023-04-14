@@ -11,9 +11,9 @@ namespace SchellingModelOfSegregation
         private int iteracija = 0;
         private readonly int emptyPlaceCount = 0;
         private readonly Color happyColor = new(0, 175, 0);
-        private List<Сitizens> emptyPlacesList = new();
-        private List<Сitizens> sadСitizensList = new();
-        private Сitizens[,] city;
+        private List<Spot> emptyPlacesList = new();
+        private List<Spot> sadСitizensList = new();
+        private Spot[,] city;
 
         //Constructors
         public City(int height, int width, int emptyPlace)
@@ -21,20 +21,27 @@ namespace SchellingModelOfSegregation
             this.height = height;
             this.width = width;
             emptyPlaceCount = emptyPlace;
-            city = new Сitizens[height, width];
+            city = new Spot[height, width];
         }
 
         //Methods
         public void BildCity(int neighbor)
         {
             //Create City
-            int chance = 0;
             for (int i = 0; i < height; i++)
             {
                 for (int j = 0; j < width; j++)
                 {
-                    chance = random.Next(1, 3);
-                    city[i, j] = new Сitizens(i, j, chance, neighbor);
+                    var chance = random.Next(2);
+                    switch (chance)
+                    {
+                        case 0:
+                            city[i, j] = new Agent(i, j, new Color(3, 169, 244), neighbor);
+                            break;
+                        case 1:
+                            city[i, j] = new Agent(i, j, new Color(244, 67, 54), neighbor);
+                            break;
+                    }
                 }
             }
             //Create empty place in city
@@ -43,9 +50,9 @@ namespace SchellingModelOfSegregation
             {
                 int i = random.Next(height);
                 int j = random.Next(width);
-                if (city[i, j].Symbol != "  ")
+                if (city[i, j].agentColor != Color.White)
                 {
-                    city[i, j] = new Сitizens(i, j);
+                    city[i, j] = new EmptyPlace(i, j);
                     x++;
                 }
             }
@@ -57,7 +64,8 @@ namespace SchellingModelOfSegregation
             {
                 for (var j = 0; j < width; j++)
                 {
-                    AnsiConsole.Write(new Text(city[i, j].Symbol, new Style(Color.White, city[i, j].Humor)));
+                    city[i, j].DrawInCity();
+                    //AnsiConsole.Write(new Text(city[i, j].Symbol, new Style(Color.White, city[i, j].Humor)));
                 }
                 AnsiConsole.WriteLine();
             }
@@ -67,29 +75,25 @@ namespace SchellingModelOfSegregation
         public void CheckHappiness()
         {
             sadСitizensList.Clear();
-            foreach (Сitizens c in city)
+            foreach (Spot c in city)
             {
-                if (c.Symbol != "  ")
-                {
-                    if (c.CheckHappiness(city, height, width) == "Sad") { sadСitizensList.Add(c); }
-                }
+                if (!c.CheckHappiness(city, height, width)) { sadСitizensList.Add(c); }
             }
         }
         public void CheckEmpty()
         {
             emptyPlacesList.Clear();
-            foreach (Сitizens c in city)
+            foreach (Spot c in city)
             {
                 if (c.CheckEmpty() == "Empty") { emptyPlacesList.Add(c); }
             }
         }
         public void Migration()
         {
-            Color color = new Color(0, 175, 0);
             if (sadСitizensList.Count > 0)
             {
-                Сitizens sadСitizens = sadСitizensList[random.Next(sadСitizensList.Count)];
-                Сitizens emptyPlaces = emptyPlacesList[random.Next(emptyPlacesList.Count)];
+                Spot sadСitizens = sadСitizensList[random.Next(sadСitizensList.Count)];
+                Spot emptyPlaces = emptyPlacesList[random.Next(emptyPlacesList.Count)];
 
                 city[emptyPlaces.Coordinat_i, emptyPlaces.Coordinat_j] = sadСitizens;
                 city[sadСitizens.Coordinat_i, sadСitizens.Coordinat_j] = emptyPlaces;
@@ -107,7 +111,8 @@ namespace SchellingModelOfSegregation
                     {
                         if (0 <= i && i < height && 0 <= j && j < width && (i != sadСitizens.Coordinat_i || j != sadСitizens.Coordinat_j))
                         {
-                            if (city[i, j].CheckHappiness(city, height, width) == "Sad"){
+                            if (!city[i, j].CheckHappiness(city, height, width))
+                            {
                                 sadСitizensList.Add(city[i, j]);
                             }
                         }
@@ -120,7 +125,7 @@ namespace SchellingModelOfSegregation
                     {
                         if (0 <= i && i < height && 0 <= j && j < width && (i != emptyPlaces.Coordinat_i || j != emptyPlaces.Coordinat_j))
                         {
-                            if (city[i, j].CheckHappiness(city, height, width) == "Sad")
+                            if (!city[i, j].CheckHappiness(city, height, width))
                             {
                                 sadСitizensList.Add(city[i, j]);
                             }
@@ -128,34 +133,37 @@ namespace SchellingModelOfSegregation
                     }
                 }
 
-                sadСitizensList.RemoveAll(citizen => citizen.Humor == happyColor);
+                sadСitizensList.RemoveAll(citizen => citizen.happy == true);
                 iteracija++;
             }
         }
         private void CauntСitizencs()
         {
-            int dog = 0;
-            int cat = 0;
-            int empty = 0;
+            int redCount = 0;
+            int blueCount = 0;
+            int emptyCount = 0;
 
-            foreach (Сitizens i in city)
+            Color red = new Color(244, 67, 54);
+            Color blue = new Color(3, 169, 244);
+
+            foreach (Agent i in city)
             {
-                if (i.Symbol == "🐶")
+                if (i.agentColor == red)
                 {
-                    dog++;
+                    redCount++;
                 }
-                else if (i.Symbol == "🐱")
+                else if (i.agentColor == blue)
                 {
-                    cat++;
+                    blueCount++;
                 }
                 else
                 {
-                    empty++;
+                    emptyCount++;
                 }
             }
-            Console.WriteLine($"🐶 - {dog}");
-            Console.WriteLine($"🐱 - {cat}");
-            Console.WriteLine($"Emppty - {empty} ");
+            Console.WriteLine($"Red - {redCount}");
+            Console.WriteLine($"Blue - {blueCount}");
+            Console.WriteLine($"Emppty - {emptyCount} ");
             Console.WriteLine($"Iteracija - {iteracija}");
             Console.WriteLine("");
         }

@@ -1,6 +1,7 @@
 ﻿using Spectre.Console;
 using System;
 using System.Net.Security;
+using System.Threading.Channels;
 
 namespace SchellingModelOfSegregation;
 
@@ -9,15 +10,22 @@ public class ModelOfSegregation
     public static void Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.Title = "Schelling Model Of Segregation";
 
-        Console.WriteLine("Rozwiń okno konsoli do pełnego ekranu i naciśni -Enter-");
-        Console.ReadLine();
-        Console.Clear();
+        //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(76, 175, 80))));
+        //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(3, 169, 244))));
+        //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(255, 235, 59))));
+        //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(244, 67, 54))));
+        //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(156, 39, 176))));
 
         int height = 0;
         int width = 0;
         int emptyPlace = 0;
         int neighbor = 0;
+
+        Console.WriteLine("Rozwiń okno konsoli do pełnego ekranu i naciśni -Enter-");
+        Console.ReadLine();
+        Console.Clear();
 
         Console.WriteLine($"Wysokość świata (Min.-25 Max.-{Console.WindowHeight - 1})");
         if (int.TryParse(Console.ReadLine(), out int resulth))
@@ -39,8 +47,6 @@ public class ModelOfSegregation
         {
             neighbor = resultn;
         }
-
-
 
         City city = new City(height, width, emptyPlace);
         Console.Clear();

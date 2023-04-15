@@ -15,13 +15,13 @@ namespace SchellingModelOfSegregation
                 {
                     if (0 <= i && i < height && 0 <= j && j < width && (i != Coordinat_i || j != Coordinat_j))
                     {
-                        if (city[i, j].agentColor == agentColor) { countNeighbor++; }
+                        if (city[i, j].AgentColor == AgentColor) { countNeighbor++; }
                     }
                 }
             }
-            happu = (countNeighbor >= needNeighbor ? true : false);
+            Happy = (countNeighbor >= needNeighbor ? true : false);
             DrawInCity();
-            return happu;
+            return Happy;
         }
     }
 }

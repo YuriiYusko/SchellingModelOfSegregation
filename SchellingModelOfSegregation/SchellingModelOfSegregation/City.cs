@@ -10,9 +10,8 @@ namespace SchellingModelOfSegregation
         private readonly int width = 0;
         private int iteracija = 0;
         private readonly int emptyPlaceCount = 0;
-        private readonly Color happyColor = new(0, 175, 0);
         private List<Spot> emptyPlacesList = new();
-        private List<Spot> sadСitizensList = new();
+        private List<Spot> sadAgentList = new();
         private Spot[,] city;
 
         //Constructors
@@ -50,14 +49,30 @@ namespace SchellingModelOfSegregation
             {
                 int i = random.Next(height);
                 int j = random.Next(width);
-                if (city[i, j].agentColor != Color.White)
+                if (city[i, j].AgentColor != Color.White)
                 {
                     city[i, j] = new EmptyPlace(i, j);
                     x++;
                 }
             }
-            CheckEmpty();
+            BildEmptyList();
         }
+        public void BildSadAgentList()
+        {
+            sadAgentList.Clear();
+            foreach (Spot c in city)
+            {
+                if (!c.CheckHappiness(city, height, width)) { sadAgentList.Add(c); }
+            }
+        }
+         public void BildEmptyList()
+        {
+            emptyPlacesList.Clear();
+            foreach (Spot c in city)
+            {
+                if (c.CheckEmpty() == "Empty") { emptyPlacesList.Add(c); }
+            }
+        }       
         public void DrawCity()
         {
             for (var i = 0; i < height; i++)
@@ -65,34 +80,17 @@ namespace SchellingModelOfSegregation
                 for (var j = 0; j < width; j++)
                 {
                     city[i, j].DrawInCity();
-                    //AnsiConsole.Write(new Text(city[i, j].Symbol, new Style(Color.White, city[i, j].Humor)));
                 }
                 AnsiConsole.WriteLine();
             }
             AnsiConsole.WriteLine();
             CauntСitizencs();
         }
-        public void CheckHappiness()
-        {
-            sadСitizensList.Clear();
-            foreach (Spot c in city)
-            {
-                if (!c.CheckHappiness(city, height, width)) { sadСitizensList.Add(c); }
-            }
-        }
-        public void CheckEmpty()
-        {
-            emptyPlacesList.Clear();
-            foreach (Spot c in city)
-            {
-                if (c.CheckEmpty() == "Empty") { emptyPlacesList.Add(c); }
-            }
-        }
         public void Migration()
         {
-            if (sadСitizensList.Count > 0)
+            if (sadAgentList.Count > 0)
             {
-                Spot sadСitizens = sadСitizensList[random.Next(sadСitizensList.Count)];
+                Spot sadСitizens = sadAgentList[random.Next(sadAgentList.Count)];
                 Spot emptyPlaces = emptyPlacesList[random.Next(emptyPlacesList.Count)];
 
                 city[emptyPlaces.Coordinat_i, emptyPlaces.Coordinat_j] = sadСitizens;
@@ -113,7 +111,7 @@ namespace SchellingModelOfSegregation
                         {
                             if (!city[i, j].CheckHappiness(city, height, width))
                             {
-                                sadСitizensList.Add(city[i, j]);
+                                sadAgentList.Add(city[i, j]);
                             }
                         }
                     }
@@ -127,13 +125,13 @@ namespace SchellingModelOfSegregation
                         {
                             if (!city[i, j].CheckHappiness(city, height, width))
                             {
-                                sadСitizensList.Add(city[i, j]);
+                                sadAgentList.Add(city[i, j]);
                             }
                         }
                     }
                 }
 
-                sadСitizensList.RemoveAll(citizen => citizen.happy == true);
+                sadAgentList.RemoveAll(Spot => Spot.Happy == true);
                 iteracija++;
             }
         }
@@ -148,11 +146,11 @@ namespace SchellingModelOfSegregation
 
             foreach (Agent i in city)
             {
-                if (i.agentColor == red)
+                if (i.AgentColor == red)
                 {
                     redCount++;
                 }
-                else if (i.agentColor == blue)
+                else if (i.AgentColor == blue)
                 {
                     blueCount++;
                 }

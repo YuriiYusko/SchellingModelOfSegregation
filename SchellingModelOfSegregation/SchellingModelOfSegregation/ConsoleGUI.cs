@@ -4,12 +4,10 @@ namespace SchellingModelOfSegregation
 {
     class ConsoleGUI
     {
-        int height = 0;
-        int width = 0;
-        int emptyPlace = 0;
-        int neighbor = 0;
+        int _redTolerance = 0;
+
         int speed = 100;
-        int selectedLine = 1;
+        int selectedLine = 0;
 
         public void Go()
         {
@@ -18,72 +16,114 @@ namespace SchellingModelOfSegregation
             Console.CursorVisible = false;
 
             //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(76, 175, 80)))); - Green
-            //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(3, 169, 244)))); - Light Blue
+            //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(3, 169, 244)))); - Blue
             //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(255, 235, 59)))); - Yellow
             //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(244, 67, 54)))); - Red
             //AnsiConsole.Write(new Text("  ", new Style(Color.White, new Color(156, 39, 176)))); - Purple
 
-            Start();
-
-            City city = new(height, width, emptyPlace);
+            City city = EnteringStartParameters();
             Console.Clear();
-
-            city.BildCity(neighbor);
+            city.BildCity();
             city.BildSadAgentList();
             city.BildEmptyList();
-            DrawMenu();
-            Console.ReadLine();
+            DrawMenu(city);
 
             ConsoleKeyInfo cki = new();
-            bool pause = false;
             while (true)
             {
-                if (!pause) { city.Migration(); }
+                if (speed != 100) { city.Migration(); }
 
                 if (Console.KeyAvailable == true)
                 {
                     cki = Console.ReadKey(true);
                     switch (cki.Key)
                     {
-                        case ConsoleKey.Add:
-                        case ConsoleKey.OemPlus:
-                            if (speed > 0) { speed -= 20; DrawMenu(); }
+                        case ConsoleKey.LeftArrow:
+                        case ConsoleKey.A:
+                            if (selectedLine == 0)
+                            {
+                                if (speed < 100) { speed += 20; DrawMenu(city); }
+                            }
+                            if (selectedLine == 4)
+                            {
+                                city.RedTolerance = --city.RedTolerance; ;
+                                city.BildSadAgentList();
+                                DrawMenu(city);
+                            }
+                            if (selectedLine == 8)
+                            {
+                                city.BlueTolerance = --city.BlueTolerance; ;
+                                city.BildSadAgentList();
+                                DrawMenu(city);
+                            }
                             break;
-                        case ConsoleKey.Subtract:
-                        case ConsoleKey.OemMinus:
-                            if (speed < 100) { speed += 20; DrawMenu(); }
-                            break;
-                        case ConsoleKey.Spacebar:
-                            pause = !pause;
-                            break;
-                        case ConsoleKey.UpArrow:
-                            if (selectedLine < 6) { selectedLine += 1; DrawMenu(); }
+                        case ConsoleKey.RightArrow:
+                        case ConsoleKey.D:
+                            if (selectedLine == 0)
+                            {
+                                if (speed > 0) { speed -= 20; DrawMenu(city); }
+                            }
+                            if (selectedLine == 4)
+                            {
+                                city.RedTolerance = ++city.RedTolerance;
+                                city.BildSadAgentList();
+                                DrawMenu(city);
+                            }
+                            if (selectedLine == 8)
+                            {
+                                city.BlueTolerance = ++city.BlueTolerance; ;
+                                city.BildSadAgentList();
+                                DrawMenu(city);
+                            }
                             break;
                         case ConsoleKey.DownArrow:
-                            if (selectedLine > 1) { selectedLine -= 1; DrawMenu(); }
+                        case ConsoleKey.S:
+                            if (selectedLine < 20) { selectedLine += 4; DrawMenu(city); }
+                            break;
+                        case ConsoleKey.UpArrow:
+                        case ConsoleKey.W:
+                            if (selectedLine > 0) { selectedLine -= 4; DrawMenu(city); }
                             break;
                     }
                 }
 
-                Console.SetCursorPosition(0, height);
-                Console.Write(cki.Key + "                    ");
-                Console.SetCursorPosition(0, height + 1);
-                Console.Write(selectedLine);
+                //Console.SetCursorPosition(0, city.Height + 5);
+                //Console.Write(cki.Key + "                    ");
+                //Console.SetCursorPosition(0, city.Height + 6);
+                //Console.Write(selectedLine + "               ");
 
                 Task.Run(() => Thread.Sleep(speed)).Wait();
             }
         }
-        private void DrawMenu()
+        private void DrawMenu(City city)
         {
-            Console.SetCursorPosition(width + width + 3, 0);
-            Console.Write("Speed:");
-            Console.SetCursorPosition(width + width + 3, 1);
-
+            //Сhoice
+            Console.SetCursorPosition(city.Width + city.Width + 1, 0);
+            for (int i = 0; i < 23; i++)
+            {
+                Console.SetCursorPosition(city.Width + city.Width + 1, i);
+                Console.Write(" ");
+            }
+            for (int i = 0; i < 3; i++)
+            {
+                Console.SetCursorPosition(city.Width + city.Width + 1, selectedLine + i);
+                Console.Write(">");
+            }
+            //Speed
+            Console.SetCursorPosition(city.Width + city.Width + 3, 0);
+            if (speed != 100)
+            {
+                Console.Write("Speed:");
+            }
+            else
+            {
+                Console.Write("Pause:");
+            }
+            Console.SetCursorPosition(city.Width + city.Width + 3, 1);
             switch (speed)
             {
                 case 0:
                     AnsiConsole.Write(new Text("||||||", new Style(Color.Black, Color.Grey)));
-
                     break;
                 case 20:
                     AnsiConsole.Write(new Text("||||| ", new Style(Color.Black, Color.Grey)));
@@ -100,12 +140,21 @@ namespace SchellingModelOfSegregation
                 case 100:
                     AnsiConsole.Write(new Text("|     ", new Style(Color.Black, Color.Grey)));
                     break;
-
             }
+            //Red
+            Console.SetCursorPosition(city.Width + city.Width + 3, 5);
+            Console.WriteLine($"Red - {city.RedTolerance}");
+            //Blue
+            Console.SetCursorPosition(city.Width + city.Width + 3, 9);
+            Console.WriteLine($"Blue - {city.BlueTolerance}");
         }
 
-        private void Start()
+        private City EnteringStartParameters()
         {
+            int height = 0;
+            int width = 0;
+            int emptyPlace = 0;
+
             Console.WriteLine("Rozwiń okno konsoli do pełnego ekranu i naciśni -Enter-");
             Console.ReadLine();
             Console.WriteLine($"Wysokość świata (Min.-25 Max.-{Console.WindowHeight - 1})");
@@ -123,11 +172,7 @@ namespace SchellingModelOfSegregation
             {
                 emptyPlace = resulte;
             }
-            Console.WriteLine("Poziom tolerancji (Optymalny: 3-5).");
-            if (int.TryParse(Console.ReadLine(), out int resultn))
-            {
-                neighbor = resultn;
-            }
+            return new(height, width, emptyPlace);
         }
     }
 }

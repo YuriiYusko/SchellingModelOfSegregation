@@ -6,6 +6,8 @@ namespace SchellingModelOfSegregation
     {
         protected readonly Color Red = new Color(244, 67, 54);
         protected readonly Color Blue = new Color(3, 169, 244);
+        protected readonly Color Green = new Color(76, 175, 80);
+        protected readonly Color Yellow = new Color(255, 235, 59);
 
         public Spot(int coordinat_i, int coordinat_j, Color color)
         {
@@ -25,6 +27,14 @@ namespace SchellingModelOfSegregation
             if (color == Blue)
             {
                 StringColor = "Blue";
+            }
+            if (color == Green)
+            {
+                StringColor = "Green";
+            }
+            if (color == Yellow)
+            {
+                StringColor = "Yellow";
             }
         }
         public string StringColor { get; private set; }

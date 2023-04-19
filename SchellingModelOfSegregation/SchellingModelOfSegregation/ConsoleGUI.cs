@@ -4,9 +4,19 @@ namespace SchellingModelOfSegregation
 {
     class ConsoleGUI
     {
-        int speed = 100;
-        int numberTypesAgents = 2;
-        int selectedLine = 0;
+        const double percent = 5;
+
+        int speed;
+        int countTypesAgents;
+        int selectedLine;
+        City city;
+
+        public ConsoleGUI()
+        {
+            selectedLine = 0;
+            speed = 100;
+            city = EnteringStartParameters();
+        }
 
         public void Go()
         {
@@ -14,9 +24,8 @@ namespace SchellingModelOfSegregation
             Console.Title = "Schelling Model Of Segregation";
             Console.CursorVisible = false;
 
-            City city = EnteringStartParameters();
             Console.Clear();
-            city.BildCity(numberTypesAgents);
+            city.BildCity(countTypesAgents);
             city.BildSadAgentList();
             city.BildEmptyList();
             DrawMenu(city);
@@ -33,65 +42,11 @@ namespace SchellingModelOfSegregation
                     {
                         case ConsoleKey.LeftArrow:
                         case ConsoleKey.A:
-                            if (selectedLine == 0)
-                            {
-                                if (speed < 100) { speed += 20; DrawMenu(city); }
-                            }
-                            if (selectedLine == 4)
-                            {
-                                city.RedTolerance = --city.RedTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 8)
-                            {
-                                city.BlueTolerance = --city.BlueTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 12 && numberTypesAgents >= 3)
-                            {
-                                city.GreenTolerance = --city.GreenTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 16 && numberTypesAgents >= 4)
-                            {
-                                city.YellowTolerance = --city.YellowTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
+                            PercentDown();
                             break;
                         case ConsoleKey.RightArrow:
                         case ConsoleKey.D:
-                            if (selectedLine == 0)
-                            {
-                                if (speed > 0) { speed -= 20; DrawMenu(city); }
-                            }
-                            if (selectedLine == 4)
-                            {
-                                city.RedTolerance = ++city.RedTolerance;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 8)
-                            {
-                                city.BlueTolerance = ++city.BlueTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 12 && numberTypesAgents >= 3)
-                            {
-                                city.GreenTolerance = ++city.GreenTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
-                            if (selectedLine == 16 && numberTypesAgents >= 4)
-                            {
-                                city.YellowTolerance = ++city.YellowTolerance; ;
-                                city.BildSadAgentList();
-                                DrawMenu(city);
-                            }
+                            PercentUp();
                             break;
                         case ConsoleKey.DownArrow:
                         case ConsoleKey.S:
@@ -103,10 +58,77 @@ namespace SchellingModelOfSegregation
                             break;
                     }
                 }
-
+                //city.DrawCity();
+                if (speed != 0) {
                 Task.Run(() => Thread.Sleep(speed)).Wait();
+                 }
             }
         }
+
+        private void PercentUp()
+        {
+            if (selectedLine == 0)
+            {
+                if (speed > 0) { speed -= 20; DrawMenu(city); }
+            }
+            if (selectedLine == 4)
+            {
+                city.BluePercentSameNeighbors += percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 8)
+            {
+                city.RedPercentSameNeighbors += percent;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 12 && countTypesAgents >= 3)
+            {
+                city.GreenPercentSameNeighbors += percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 16 && countTypesAgents >= 4)
+            {
+                city.YellowPercentSameNeighbors += percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+        }
+
+        private void PercentDown() 
+        {
+            if (selectedLine == 0)
+            {
+                if (speed < 100) { speed += 20; DrawMenu(city); }
+            }
+            if (selectedLine == 4)
+            {
+                city.BluePercentSameNeighbors -= percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 8)
+            {
+                city.RedPercentSameNeighbors -= percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 12 && countTypesAgents >= 3)
+            {
+                city.GreenPercentSameNeighbors -= percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+            if (selectedLine == 16 && countTypesAgents >= 4)
+            {
+                city.YellowPercentSameNeighbors -= percent; ;
+                city.BildSadAgentList();
+                DrawMenu(city);
+            }
+        }
+
         private void DrawMenu(City city)
         {
             //Сhoice
@@ -125,11 +147,11 @@ namespace SchellingModelOfSegregation
             Console.SetCursorPosition(city.Width + city.Width + 3, 0);
             if (speed != 100)
             {
-                Console.Write("Speed:" + city.GreenTolerance);
+                Console.Write("Speed: " + selectedLine + "  ");
             }
             else
             {
-                Console.Write("Pause:");
+                Console.Write("Pause: " + selectedLine + "  ");
             }
             Console.SetCursorPosition(city.Width + city.Width + 3, 1);
             switch (speed)
@@ -155,16 +177,16 @@ namespace SchellingModelOfSegregation
             }
             //Red
             Console.SetCursorPosition(city.Width + city.Width + 3, 5);
-            Console.WriteLine($"Red - {city.RedTolerance}");
+            Console.WriteLine($"Blue - {city.BluePercentSameNeighbors}  ");
             //Blue
             Console.SetCursorPosition(city.Width + city.Width + 3, 9);
-            Console.WriteLine($"Blue - {city.BlueTolerance}");
+            Console.WriteLine($"Red - {city.RedPercentSameNeighbors}  ");
             //Green
             Console.SetCursorPosition(city.Width + city.Width + 3, 13);
-            Console.WriteLine($"Green - {city.GreenTolerance}");
+            Console.WriteLine($"Green - {city.GreenPercentSameNeighbors}  ");
             //Yellow
             Console.SetCursorPosition(city.Width + city.Width + 3, 17);
-            Console.WriteLine($"Yellow - {city.YellowTolerance}");
+            Console.WriteLine($"Yellow - {city.YellowPercentSameNeighbors}  ");
         }
 
         private City EnteringStartParameters()
@@ -193,7 +215,7 @@ namespace SchellingModelOfSegregation
             Console.WriteLine($"Liczba agentów: (2 - 4)");
             if (int.TryParse(Console.ReadLine(), out int resulta))
             {
-                numberTypesAgents = resulta;
+                this.countTypesAgents = resulta;
             }
             return new(height, width, emptyPlace);
         }

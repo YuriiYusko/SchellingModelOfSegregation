@@ -1,5 +1,4 @@
 ﻿using Spectre.Console;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SchellingModelOfSegregation
 {
@@ -12,10 +11,10 @@ namespace SchellingModelOfSegregation
         private List<Spot> sadAgentList = new();
         private Spot[,] city;
 
-        private int _redTolerance;
-        private int _blueTolerance;
-        private int _greenTolerance;
-        private int _yellowTolerance;
+        private double _redNeighbors;
+        private double _blueNeighbors;
+        private double _greenNeighbors;
+        private double _yellowNeighbors;
 
         //Constructors
         public City(int height, int width, int emptyPlace)
@@ -24,33 +23,33 @@ namespace SchellingModelOfSegregation
             Width = width;
             city = new Spot[height, width];
             emptyPlaceCount = emptyPlace;
-            RedTolerance = 0;
-            BlueTolerance = 0;
-            GreenTolerance = 0;
-            YellowTolerance = 0;
+            RedPercentSameNeighbors = 0;
+            BluePercentSameNeighbors = 0;
+            GreenPercentSameNeighbors = 0;
+            YellowPercentSameNeighbors = 0;
         }
 
         public int Height { get; private set; }
         public int Width { get; private set; }
-        public int RedTolerance
+        public double RedPercentSameNeighbors
         {
-            get { return _redTolerance; }
-            set { if ((value >= 0) && (value <= 8)) { _redTolerance = value; } }
+            get { return _redNeighbors; }
+            set { if ((value >= 0) && (value <= 100)) { _redNeighbors = value; } }
         }
-        public int GreenTolerance
+        public double GreenPercentSameNeighbors
         {
-            get { return _greenTolerance; }
-            set { if ((value >= 0) && (value <= 8)) { _greenTolerance = value; } }
+            get { return _greenNeighbors; }
+            set { if ((value >= 0) && (value <= 100)) { _greenNeighbors = value; } }
         }
-        public int YellowTolerance
+        public double YellowPercentSameNeighbors
         {
-            get { return _yellowTolerance; }
-            set { if ((value >= 0) && (value <= 8)) { _yellowTolerance = value; } }
+            get { return _yellowNeighbors; }
+            set { if ((value >= 0) && (value <= 100)) { _yellowNeighbors = value; } }
         }
-        public int BlueTolerance
+        public double BluePercentSameNeighbors
         {
-            get { return _blueTolerance; }
-            set { if ((value >= 0) && (value <= 8)) { _blueTolerance = value; } }
+            get { return _blueNeighbors; }
+            set { if ((value >= 0) && (value <= 100)) { _blueNeighbors = value; } }
         }
 
         //Methods
@@ -65,19 +64,19 @@ namespace SchellingModelOfSegregation
                     switch (chance)
                     {
                         case 0:
-                            //Blue
+                            //Blue - 1
                             city[i, j] = new Agent(i, j, new Color(3, 169, 244));
                             break;
                         case 1:
-                            //Red
+                            //Red - 2
                             city[i, j] = new Agent(i, j, new Color(244, 67, 54));
                             break;
                         case 2:
-                            //Green
+                            //Green - 3
                             city[i, j] = new Agent(i, j, new Color(76, 175, 80));
                             break;
                         case 3:
-                            //Yellow
+                            //Yellow - 4
                             city[i, j] = new Agent(i, j, new Color(255, 235, 59));
                             break;
                     }
@@ -88,42 +87,44 @@ namespace SchellingModelOfSegregation
             {
                 int i = random.Next(city.GetLength(0));
                 int j = random.Next(city.GetLength(1));
-                if (city[i, j].AgentColor != Color.White)
+                if (city[i, j].IntColor != 0)
                 {
                     city[i, j] = new EmptyPlace(i, j);
                     x++;
                 }
             }
         }
+
         public void BildSadAgentList()
         {
             sadAgentList.Clear();
             foreach (Spot c in city)
             {
-                if (c.StringColor == "Red")
+                if (c.IntColor == 1 ) //Blue
                 {
-                    if (!c.CheckHappiness(city, RedTolerance)) { sadAgentList.Add(c); }
+                    if (!c.CheckHappiness(city, BluePercentSameNeighbors)) { sadAgentList.Add(c); }
                 }
-                if (c.StringColor == "Blue")
+                if (c.IntColor == 2) //Red
                 {
-                    if (!c.CheckHappiness(city, BlueTolerance)) { sadAgentList.Add(c); }
+                    if (!c.CheckHappiness(city, RedPercentSameNeighbors)) { sadAgentList.Add(c); }
                 }
-                if (c.StringColor == "Green")
+                if (c.IntColor == 3) //Green 
                 {
-                    if (!c.CheckHappiness(city, GreenTolerance)) { sadAgentList.Add(c); }
+                    if (!c.CheckHappiness(city, GreenPercentSameNeighbors)) { sadAgentList.Add(c); }
                 }
-                if (c.StringColor == "Yellow")
+                if (c.IntColor == 4) // Yellow
                 {
-                    if (!c.CheckHappiness(city, YellowTolerance)) { sadAgentList.Add(c); }
+                    if (!c.CheckHappiness(city, YellowPercentSameNeighbors)) { sadAgentList.Add(c); }
                 }
             }
         }
+
         public void BildEmptyList()
         {
             emptyPlacesList.Clear();
             foreach (Spot c in city)
             {
-                if (c.StringColor == "White")
+                if (c.IntColor == 0)
                 {
                     emptyPlacesList.Add(c);
                     c.DrawInCity();
@@ -131,6 +132,7 @@ namespace SchellingModelOfSegregation
 
             }
         }
+
         public void DrawCity()
         {
             for (var i = 0; i < city.GetLength(0); i++)
@@ -143,6 +145,7 @@ namespace SchellingModelOfSegregation
             }
             AnsiConsole.WriteLine();
         }
+
         public void Migration()
         {
             if (sadAgentList.Count > 0)
@@ -187,28 +190,28 @@ namespace SchellingModelOfSegregation
 
         private void CheckHappiness(int i, int j)
         {
-            switch (city[i, j].StringColor)
+            switch (city[i, j].IntColor)
             {
-                case "Red":
-                    if (!city[i, j].CheckHappiness(city, RedTolerance))
+                case 1:
+                    if (!city[i, j].CheckHappiness(city, BluePercentSameNeighbors))
                     {
                         sadAgentList.Add(city[i, j]);
                     }
                     break;
-                case "Blue":
-                    if (!city[i, j].CheckHappiness(city, BlueTolerance))
+                case 2:
+                    if (!city[i, j].CheckHappiness(city, RedPercentSameNeighbors))
                     {
                         sadAgentList.Add(city[i, j]);
                     }
                     break;
-                case "Green":
-                    if (!city[i, j].CheckHappiness(city, GreenTolerance))
+                case 3:
+                    if (!city[i, j].CheckHappiness(city, GreenPercentSameNeighbors))
                     {
                         sadAgentList.Add(city[i, j]);
                     }
                     break;
-                case "Yellow":
-                    if (!city[i, j].CheckHappiness(city, YellowTolerance))
+                case 4:
+                    if (!city[i, j].CheckHappiness(city, YellowPercentSameNeighbors))
                     {
                         sadAgentList.Add(city[i, j]);
                     }

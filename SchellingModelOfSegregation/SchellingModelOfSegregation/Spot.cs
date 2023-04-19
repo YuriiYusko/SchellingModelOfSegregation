@@ -4,10 +4,10 @@ namespace SchellingModelOfSegregation
 {
     abstract class Spot
     {
-        protected readonly Color Red = new Color(244, 67, 54);
-        protected readonly Color Blue = new Color(3, 169, 244);
-        protected readonly Color Green = new Color(76, 175, 80);
-        protected readonly Color Yellow = new Color(255, 235, 59);
+        protected readonly Color Blue = new Color(3, 169, 244);     //1
+        protected readonly Color Red = new Color(244, 67, 54);      //2
+        protected readonly Color Green = new Color(76, 175, 80);    //3
+        protected readonly Color Yellow = new Color(255, 235, 59);  //4
 
         public Spot(int coordinat_i, int coordinat_j, Color color)
         {
@@ -15,29 +15,30 @@ namespace SchellingModelOfSegregation
             Coordinat_j = coordinat_j;
             AgentColor = color;
             Happy = true;
-            StringColor = "Error";
-            if (color == Color.White)
+            IntColor = 99;
+            if (color == Color.White) // 0
             {
-                StringColor = "White";
+                IntColor = 0;
             }
-            if (color == Red)
+            if (color == Blue) // 1
             {
-                StringColor = "Red";
+                IntColor = 1;
             }
-            if (color == Blue)
+            if (color == Red) // 2
             {
-                StringColor = "Blue";
+                IntColor = 2;
             }
-            if (color == Green)
+            if (color == Green) //3
             {
-                StringColor = "Green";
+                IntColor = 3;
             }
-            if (color == Yellow)
+            if (color == Yellow) //4
             {
-                StringColor = "Yellow";
+                IntColor = 4;
             }
         }
-        public string StringColor { get; private set; }
+
+        public int IntColor { get; private set; }
         public int Coordinat_i { get; private set; }
         public int Coordinat_j { get; private set; }
         public Color AgentColor { get; private set; }
@@ -62,6 +63,6 @@ namespace SchellingModelOfSegregation
                 AnsiConsole.Write(new Text("}{", new Style(Color.Black, AgentColor)));
             }
         }
-        public abstract bool CheckHappiness(Spot[,] city, int needNeighbor);
+        public abstract bool CheckHappiness(Spot[,] city, double needNeighbor);
     }
 }

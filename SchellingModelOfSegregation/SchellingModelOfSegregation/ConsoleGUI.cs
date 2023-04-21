@@ -33,7 +33,10 @@ namespace SchellingModelOfSegregation
             ConsoleKeyInfo cki = new();
             while (true)
             {
-                if (speed != 100) { city.Migration(); }
+                if (speed != 100)
+                {
+                    city.Migration();
+                }
 
                 if (Console.KeyAvailable == true)
                 {
@@ -42,10 +45,12 @@ namespace SchellingModelOfSegregation
                     {
                         case ConsoleKey.LeftArrow:
                         case ConsoleKey.A:
+                            SpeedDown();
                             PercentDown();
                             break;
                         case ConsoleKey.RightArrow:
                         case ConsoleKey.D:
+                            SpeedUp();
                             PercentUp();
                             break;
                         case ConsoleKey.DownArrow:
@@ -58,19 +63,30 @@ namespace SchellingModelOfSegregation
                             break;
                     }
                 }
-                //city.DrawCity();
-                if (speed != 0) {
-                Task.Run(() => Thread.Sleep(speed)).Wait();
-                 }
+                if (speed != 0)
+                {
+                    Task.Run(() => Thread.Sleep(speed)).Wait();
+                }
             }
         }
-
-        private void PercentUp()
+        private void SpeedUp()
         {
             if (selectedLine == 0)
             {
                 if (speed > 0) { speed -= 20; DrawMenu(city); }
             }
+        }
+
+        private void SpeedDown()
+        {
+            if (selectedLine == 0)
+            {
+                if (speed < 100) { speed += 20; DrawMenu(city); }
+            }
+        }
+
+        private void PercentUp()
+        {
             if (selectedLine == 4)
             {
                 city.BluePercentSameNeighbors += percent; ;
@@ -97,12 +113,8 @@ namespace SchellingModelOfSegregation
             }
         }
 
-        private void PercentDown() 
+        private void PercentDown()
         {
-            if (selectedLine == 0)
-            {
-                if (speed < 100) { speed += 20; DrawMenu(city); }
-            }
             if (selectedLine == 4)
             {
                 city.BluePercentSameNeighbors -= percent; ;
